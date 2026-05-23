@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'RBT Learn | AI-Powered Training for Behavior Technicians',
+  title: 'Clarity Behavior Lab | AI-Powered Training for Behavior Technicians',
   description:
-    'Experiential learning platform for Registered Behavior Technicians featuring AI simulations, guided rehearsal, and adaptive competency training.',
+    'Experiential learning platform for Behavior Technicians featuring AI simulations, guided rehearsal, and adaptive competency training.',
   icons: {
     icon: [
       { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },

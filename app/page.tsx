@@ -18,7 +18,7 @@ export default async function HomePage() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <Brain className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-lg">RBT Learn</span>
+            <span className="font-bold text-lg">Clarity Behavior Lab</span>
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/sign-in">
@@ -45,8 +45,8 @@ export default async function HomePage() {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 text-pretty">
-            Experiential learning for Registered Behavior Technicians. Practice with AI clients,
-            track your competencies, and earn certifications through gamified progression.
+            Experiential learning for Behavior Technicians. Practice with AI simulations,
+            track your competencies, and earn training certification through gamified progression.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/sign-up">
@@ -120,7 +120,7 @@ export default async function HomePage() {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Start Your Learning Journey?</h2>
           <p className="text-muted-foreground mb-8">
-            Join RBT Learn today and accelerate your path to clinical excellence through
+            Join Clarity Behavior Lab today and accelerate your path to clinical excellence through
             AI-powered experiential learning.
           </p>
           <Link href="/sign-up">

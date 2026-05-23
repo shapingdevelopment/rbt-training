@@ -1,8 +1,19 @@
 import { auth } from '@clerk/nextjs/server'
 import { Anthropic } from '@anthropic-ai/sdk'
 import type { MessageParam } from '@anthropic-ai/sdk/resources/messages'
+import { RBT_TASK_LIST, SCORING_STANDARDS } from '@/lib/rbt-context'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
+const buildSystemPrompt = (scenarioPrompt: string) => `
+${RBT_TASK_LIST}
+
+${SCORING_STANDARDS}
+
+---
+
+${scenarioPrompt}
+`
 
 const SCENARIO_PROMPTS: Record<string, string> = {
   'de-escalation': `You are an experienced ABA supervisor conducting a clinical simulation for an RBT trainee.
@@ -92,7 +103,6 @@ Start by describing the developing situation and wait for the RBT to respond.`,
 
 export async function POST(request: Request) {
   try {
-    // Authenticate — works for both /dashboard (protected) and /demo (public)
     const { userId } = await auth()
 
     const { scenarioId, messages } = await request.json()
@@ -101,7 +111,9 @@ export async function POST(request: Request) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 })
     }
 
-    const systemPrompt = SCENARIO_PROMPTS[scenarioId] ?? SCENARIO_PROMPTS['de-escalation']
+    const systemPrompt = buildSystemPrompt(
+      SCENARIO_PROMPTS[scenarioId] ?? SCENARIO_PROMPTS['de-escalation']
+    )
 
     const formattedMessages: MessageParam[] = messages.map((msg: { role: string; content: string }) => ({
       role: msg.role as 'user' | 'assistant',
