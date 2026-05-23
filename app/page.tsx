@@ -138,10 +138,10 @@ export default async function HomePage() {
             <div className="w-6 h-6 rounded bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <Brain className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-semibold text-sm">RBT Learn</span>
+            <span className="font-semibold text-sm">Clarity Behavior Lab</span>
           </div>
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} RBT Learn. AI-powered training for behavior technicians.
+            &copy; {new Date().getFullYear()} Clarity Behavior Lab. AI-powered training for behavior technicians.
           </p>
         </div>
       </footer>
