@@ -69,7 +69,7 @@ export default async function HomePage() {
             {[
               { value: '40+', label: 'Training Scenarios' },
               { value: '6',   label: 'Competency Areas' },
-              { value: '100%', label: 'AI-Powered' },
+              { value: '100%', label: 'Learner Centered' },
               { value: '40h', label: 'Certification Ready' },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
