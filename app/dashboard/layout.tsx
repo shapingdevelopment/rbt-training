@@ -1,28 +1,32 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { createAuthClient, supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 import { DashboardSidebar } from '@/components/dashboard/sidebar'
-import type { Profile, UserProgress } from '@/lib/types'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { userId, getToken } = await auth()
+  const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
   const clerkUser = await currentUser()
 
-  // Try Clerk → Supabase JWT first; fall back to admin client if not configured
-  const token = await getToken({ template: 'supabase' }).catch(() => null)
-  const supabase = token ? createAuthClient(token) : supabaseAdmin
+  // Use admin client — bypasses RLS entirely, always works
+  let profile = null
+  let progress = null
 
-  // Fetch or create profile
-  let { data: profile } = await supabase
+  // Fetch profile
+  const { data: existingProfile, error: fetchError } = await supabaseAdmin
     .from('profiles')
     .select('*')
     .eq('clerk_id', userId)
     .maybeSingle()
 
-  if (!profile) {
-    const { data: newProfile, error } = await supabaseAdmin
+  if (fetchError) {
+    console.error('Profile fetch error:', fetchError.message)
+  }
+
+  if (!existingProfile) {
+    // Create it
+    const { data: newProfile, error: insertError } = await supabaseAdmin
       .from('profiles')
       .insert({
         clerk_id: userId,
@@ -35,26 +39,48 @@ export default async function DashboardLayout({ children }: { children: React.Re
       .select('*')
       .single()
 
-    if (error) console.error('Profile insert error:', error.message)
+    if (insertError) {
+      console.error('Profile insert error:', insertError.message, insertError.code, insertError.details)
+    } else {
+      console.log('✓ Profile created for', userId)
+    }
     profile = newProfile
+  } else {
+    profile = existingProfile
   }
 
-  // Fetch or create progress
-  let { data: progress } = await supabaseAdmin
+  // Fetch progress
+  const { data: existingProgress, error: progressFetchError } = await supabaseAdmin
     .from('user_progress')
     .select('*')
     .eq('user_id', userId)
     .maybeSingle()
 
-  if (!progress) {
-    const { data: newProgress, error } = await supabaseAdmin
+  if (progressFetchError) {
+    console.error('Progress fetch error:', progressFetchError.message)
+  }
+
+  if (!existingProgress) {
+    const { data: newProgress, error: progressInsertError } = await supabaseAdmin
       .from('user_progress')
-      .insert({ user_id: userId, total_xp: 0, level: 1, current_streak: 0 })
+      .insert({
+        user_id: userId,
+        total_xp: 0,
+        level: 1,
+        current_streak: 0,
+        longest_streak: 0,
+        sessions_completed: 0,
+        sessions_abandoned: 0,
+      })
       .select('*')
       .single()
 
-    if (error) console.error('Progress insert error:', error.message)
+    if (progressInsertError) {
+      console.error('Progress insert error:', progressInsertError.message, progressInsertError.code)
+    }
     progress = newProgress
+  } else {
+    progress = existingProgress
   }
 
   const user = {
