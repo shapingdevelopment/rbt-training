@@ -68,7 +68,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { value: '150+', label: 'Training Scenarios' },
-              { value: '6',   label: 'Competency Areas' },
+              { value: '7',   label: 'Competency Areas' },
               { value: '100%', label: 'Learner Centered' },
               { value: '40h', label: 'Certification Ready' },
             ].map((stat) => (
