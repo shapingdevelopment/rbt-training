@@ -37,7 +37,7 @@ export default async function ProfilePage() {
   const name = profile?.full_name ?? clerkUser?.fullName ?? 'RBT User'
   const email = profile?.email ?? clerkUser?.emailAddresses[0]?.emailAddress ?? ''
   const role = profile?.role ?? 'rbt'
-  const roleLabel = role === 'supervisor' ? 'RBT Supervisor' : role === 'admin' ? 'Administrator' : 'Registered Behavior Technician'
+  const roleLabel = role === 'supervisor' ? 'RBT Supervisor' : role === 'admin' ? 'Administrator' : 'Behavior Technician'
   const xp = progress?.total_xp ?? 0
   const level = progress?.level ?? 1
   const sessionsCompleted = progress?.sessions_completed ?? 0
