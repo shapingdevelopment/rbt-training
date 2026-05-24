@@ -23,8 +23,7 @@ import type {
 } from '@/lib/types'
 import { 
   ArrowRight, 
-  Brain,
-  Lightbulb,
+  Lightbulb, 
   GraduationCap, 
   Target, 
   BookOpen,
@@ -46,10 +45,10 @@ interface DashboardOverviewProps {
 }
 
 const moduleLinks = [
-  { href: '/demo/simulator', label: 'AI Simulator', icon: Lightbulb, description: 'Practice with AI clients' },
-  { href: '/demo/rehearsal', label: 'Guided Rehearsal', icon: GraduationCap, description: 'Scaffolded practice' },
-  { href: '/demo/journey', label: 'Adaptive Journey', icon: Target, description: 'Personalized learning' },
-  { href: '/demo/reflection', label: 'Reflective Practice', icon: BookOpen, description: 'Analyze your sessions' },
+  { href: '/dashboard/simulator', label: 'AI Simulator', icon: Lightbulb, description: 'Practice with AI clients' },
+  { href: '/dashboard/rehearsal', label: 'Guided Rehearsal', icon: GraduationCap, description: 'Scaffolded practice' },
+  { href: '/dashboard/journey', label: 'Adaptive Journey', icon: Target, description: 'Personalized learning' },
+  { href: '/dashboard/reflect', label: 'Reflective Practice', icon: BookOpen, description: 'Analyze your sessions' },
 ]
 
 export function DashboardOverview({
@@ -242,7 +241,7 @@ export function DashboardOverview({
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">Competency Skills</CardTitle>
-                <Link href="/demo/journey">
+                <Link href="/dashboard/journey">
                   <Button variant="ghost" size="sm" className="text-xs">
                     View All <ArrowRight size={14} className="ml-1" />
                   </Button>

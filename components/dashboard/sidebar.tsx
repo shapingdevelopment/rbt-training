@@ -3,17 +3,16 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import {
-  LayoutDashboard,
-  Brain,
-  Lightbulb,
-  GraduationCap,
-  Target,
-  BookOpen,
-  User,
+import { 
+  LayoutDashboard, 
+  Lightbulb, 
+  GraduationCap, 
+  Target, 
+  BookOpen, 
+  User, 
   BarChart3,
   LogOut,
-  ShieldCheck, LightbulbIcon
+  ShieldCheck
 } from 'lucide-react'
 import { LevelBadge } from '@/components/gamification/level-badge'
 import { StreakCounter } from '@/components/gamification/streak-counter'
@@ -33,21 +32,21 @@ interface DashboardSidebarProps {
 }
 
 const rbtNavItems = [
-  { href: '/dashboard',            label: 'Dashboard',          icon: LayoutDashboard },
-  { href: '/demo/simulator',       label: 'AI Simulator',       icon: Lightbulb },
-  { href: '/demo/rehearsal',       label: 'Guided Rehearsal',   icon: GraduationCap },
-  { href: '/demo/journey',         label: 'Adaptive Journey',   icon: Target },
-  { href: '/demo/reflection',      label: 'Reflective Practice',icon: BookOpen },
-  { href: '/demo/progress',        label: 'My Progress',        icon: BarChart3 },
-  { href: '/demo/profile',         label: 'Profile',            icon: User },
+  { href: '/dashboard',               label: 'Dashboard',          icon: LayoutDashboard },
+  { href: '/dashboard/simulator',     label: 'AI Simulator',       icon: Lightbulb },
+  { href: '/dashboard/rehearsal',     label: 'Guided Rehearsal',   icon: GraduationCap },
+  { href: '/dashboard/journey',       label: 'Adaptive Journey',   icon: Target },
+  { href: '/dashboard/reflect',       label: 'Reflective Practice',icon: BookOpen },
+  { href: '/dashboard/progress',      label: 'My Progress',        icon: BarChart3 },
+  { href: '/dashboard/profile',       label: 'Profile',            icon: User },
 ]
 
 const supervisorNavItems = [
-  { href: '/dashboard',            label: 'Dashboard',          icon: LayoutDashboard },
-  { href: '/dashboard/supervisor', label: 'Supervisor View',    icon: ShieldCheck },
-  { href: '/demo/simulator',       label: 'AI Simulator',       icon: Lightbulb },
-  { href: '/demo/progress',        label: 'My Progress',        icon: BarChart3 },
-  { href: '/demo/profile',         label: 'Profile',            icon: User },
+  { href: '/dashboard',               label: 'Dashboard',          icon: LayoutDashboard },
+  { href: '/dashboard/supervisor',    label: 'Supervisor View',    icon: ShieldCheck },
+  { href: '/dashboard/simulator',     label: 'AI Simulator',       icon: Lightbulb },
+  { href: '/dashboard/progress',      label: 'My Progress',        icon: BarChart3 },
+  { href: '/dashboard/profile',       label: 'Profile',            icon: User },
 ]
 
 export function DashboardSidebar({ user, progress }: DashboardSidebarProps) {
@@ -66,7 +65,7 @@ export function DashboardSidebar({ user, progress }: DashboardSidebarProps) {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
             <Lightbulb className="w-5 h-5 text-primary-foreground" />
           </div>
-          <span className="font-bold text-lg text-sidebar-foreground">Clarity Behavior Lab</span>
+          <span className="font-bold text-lg text-sidebar-foreground">RBT Learn</span>
         </Link>
       </div>
 

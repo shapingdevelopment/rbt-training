@@ -25,7 +25,8 @@ export default function ProfilePage() {
             <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
           <div className="text-right">
-            <LevelBadge level={mockUserProgress.level} xp={mockUserProgress.total_xp} />
+            <LevelBadge level={mockUserProgress.level} />
+            <p className="text-sm text-muted-foreground mt-1">{mockUserProgress.total_xp.toLocaleString()} XP</p>
           </div>
         </div>
       </div>
