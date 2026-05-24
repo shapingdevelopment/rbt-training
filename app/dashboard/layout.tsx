@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import { supabaseAdmin } from '@/lib/supabase'
 import { DashboardSidebar } from '@/components/dashboard/sidebar'
 
+console.log('[env check] service key starts with:', process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(0, 10))
+
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
