@@ -23,7 +23,8 @@ import type {
 } from '@/lib/types'
 import { 
   ArrowRight, 
-  Brain, 
+  Brain,
+  Lightbulb,
   GraduationCap, 
   Target, 
   BookOpen,
@@ -45,7 +46,7 @@ interface DashboardOverviewProps {
 }
 
 const moduleLinks = [
-  { href: '/demo/simulator', label: 'AI Simulator', icon: Brain, description: 'Practice with AI clients' },
+  { href: '/demo/simulator', label: 'AI Simulator', icon: Lightbulb, description: 'Practice with AI clients' },
   { href: '/demo/rehearsal', label: 'Guided Rehearsal', icon: GraduationCap, description: 'Scaffolded practice' },
   { href: '/demo/journey', label: 'Adaptive Journey', icon: Target, description: 'Personalized learning' },
   { href: '/demo/reflection', label: 'Reflective Practice', icon: BookOpen, description: 'Analyze your sessions' },

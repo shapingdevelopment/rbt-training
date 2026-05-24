@@ -3,10 +3,10 @@
 import { cn } from '@/lib/utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { ModuleProgress, ModuleType } from '@/lib/types'
-import { Brain, GraduationCap, BookOpen, Target } from 'lucide-react'
+import { Lightbulb, GraduationCap, BookOpen, Target } from 'lucide-react'
 
 const moduleIcons: Record<ModuleType, React.ComponentType<{ className?: string; size?: number }>> = {
-  simulator: Brain,
+  simulator: Lightbulb,
   rehearsal: GraduationCap,
   reflective: BookOpen,
   adaptive: Target

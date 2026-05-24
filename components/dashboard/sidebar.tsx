@@ -3,16 +3,17 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { 
-  LayoutDashboard, 
-  Brain, 
-  GraduationCap, 
-  Target, 
-  BookOpen, 
-  User, 
+import {
+  LayoutDashboard,
+  Brain,
+  Lightbulb,
+  GraduationCap,
+  Target,
+  BookOpen,
+  User,
   BarChart3,
   LogOut,
-  ShieldCheck
+  ShieldCheck, LightbulbIcon
 } from 'lucide-react'
 import { LevelBadge } from '@/components/gamification/level-badge'
 import { StreakCounter } from '@/components/gamification/streak-counter'
@@ -33,7 +34,7 @@ interface DashboardSidebarProps {
 
 const rbtNavItems = [
   { href: '/dashboard',            label: 'Dashboard',          icon: LayoutDashboard },
-  { href: '/demo/simulator',       label: 'AI Simulator',       icon: Brain },
+  { href: '/demo/simulator',       label: 'AI Simulator',       icon: Lightbulb },
   { href: '/demo/rehearsal',       label: 'Guided Rehearsal',   icon: GraduationCap },
   { href: '/demo/journey',         label: 'Adaptive Journey',   icon: Target },
   { href: '/demo/reflection',      label: 'Reflective Practice',icon: BookOpen },
@@ -44,7 +45,7 @@ const rbtNavItems = [
 const supervisorNavItems = [
   { href: '/dashboard',            label: 'Dashboard',          icon: LayoutDashboard },
   { href: '/dashboard/supervisor', label: 'Supervisor View',    icon: ShieldCheck },
-  { href: '/demo/simulator',       label: 'AI Simulator',       icon: Brain },
+  { href: '/demo/simulator',       label: 'AI Simulator',       icon: Lightbulb },
   { href: '/demo/progress',        label: 'My Progress',        icon: BarChart3 },
   { href: '/demo/profile',         label: 'Profile',            icon: User },
 ]
@@ -63,7 +64,7 @@ export function DashboardSidebar({ user, progress }: DashboardSidebarProps) {
       <div className="h-16 flex items-center px-6 border-b border-sidebar-border">
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <Brain className="w-5 h-5 text-primary-foreground" />
+            <Lightbulb className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="font-bold text-lg text-sidebar-foreground">Clarity Behavior Lab</span>
         </Link>

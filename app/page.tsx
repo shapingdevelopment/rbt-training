@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Brain, Sparkles, Target, BookOpen, Shield, Trophy } from 'lucide-react'
+import { Lightbulb, Brain, Sparkles, Target, BookOpen, Shield, Trophy } from 'lucide-react'
 
 export default async function HomePage() {
   // If already signed in, send to dashboard
@@ -16,7 +16,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Brain className="w-5 h-5 text-primary-foreground" />
+              <Lightbulb className="w-5 h-5 text-primary-foreground" />
             </div>
             <span className="font-bold text-lg">Clarity Behavior Lab</span>
           </Link>
@@ -51,7 +51,7 @@ export default async function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/sign-up">
               <Button size="lg" className="gap-2">
-                <Brain size={18} />
+                <Lightbulb size={18} />
                 Start Learning Free
               </Button>
             </Link>
@@ -93,7 +93,7 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: Brain,     title: 'AI Clinical Simulator',  description: 'Practice with realistic AI clients in various behavioral scenarios. Receive real-time coaching and feedback.' },
+              { icon: Lightbulb,     title: 'AI Clinical Simulator',  description: 'Practice with realistic AI clients in various behavioral scenarios. Receive real-time coaching and feedback.' },
               { icon: Target,    title: 'Guided Rehearsal',        description: 'Scaffolded practice with prompts that fade as your confidence grows. Perfect for building fluency.' },
               { icon: BookOpen,  title: 'Reflective Practice',     description: 'Journal your sessions, receive AI analysis, and rehearse improved responses for continuous growth.' },
               { icon: Sparkles,  title: 'Adaptive Journey',        description: 'AI tracks your progress and adjusts difficulty. Personalized recommendations keep you challenged.' },
@@ -125,7 +125,7 @@ export default async function HomePage() {
           </p>
           <Link href="/sign-up">
             <Button size="lg" className="gap-2">
-              <Brain size={18} />
+              <Lightbulb size={18} />
               Get Started Free
             </Button>
           </Link>
@@ -136,7 +136,7 @@ export default async function HomePage() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Brain className="w-4 h-4 text-primary-foreground" />
+              <Lightbulb className="w-4 h-4 text-primary-foreground" />
             </div>
             <span className="font-semibold text-sm">Clarity Behavior Lab</span>
           </div>

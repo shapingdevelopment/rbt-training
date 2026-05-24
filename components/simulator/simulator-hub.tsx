@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScenarioCard } from '@/components/scenarios/scenario-card'
 import type { Scenario } from '@/lib/types'
-import { Search, Filter, Brain } from 'lucide-react'
+import { Search, Filter, Lightbulb } from 'lucide-react'
 import Link from 'next/link'
 
 interface SimulatorHubProps {
@@ -44,7 +44,7 @@ export function SimulatorHub({ scenarios, userLevel }: SimulatorHubProps) {
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
             <div className="p-3 rounded-xl bg-primary/20">
-              <Brain className="text-primary" size={32} />
+              <Lightbulb className="text-primary" size={32} />
             </div>
             <div className="flex-1">
               <h2 className="text-xl font-semibold mb-2">AI Clinical Simulator</h2>
