@@ -122,7 +122,7 @@ export default async function HomePage() {
           <h2 className="text-2xl sm:text-3xl font-bold mb-4">Ready to Start Your Learning Journey?</h2>
           <p className="text-muted-foreground mb-8 text-sm sm:text-base">
             Join Clarity Behavior Lab today and accelerate your path to clinical excellence through
-            AI-powered experiential learning.
+            AI-assisted experiential learning.
           </p>
           <Link href="/sign-up" className="inline-block w-full sm:w-auto">
             <Button size="lg" className="gap-2 w-full sm:w-auto">
