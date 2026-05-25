@@ -1,12 +1,12 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { createAuthClient } from '@/lib/supabase'
+import { getAdminClient } from '@/lib/supabase'
 import { DashboardHeader } from '@/components/dashboard/header'
 import { ProgressOverview } from '@/components/progress/progress-overview'
 import type { Profile, UserProgress, UserSkill, ModuleProgress, UserAchievement, Achievement, UserEngagement } from '@/lib/types'
 
 export default async function ProgressPage() {
-  const { userId, getToken } = await auth()
+  const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
   const clerkUser = await currentUser()
@@ -20,26 +20,23 @@ export default async function ProgressPage() {
   let userAchievements: UserAchievement[] = []
 
   try {
-    const token = await getToken({ template: 'supabase' })
-    if (token) {
-      const supabase = createAuthClient(token)
-      const results = await Promise.allSettled([
-        supabase.from('profiles').select('*').eq('clerk_id', userId).single(),
-        supabase.from('user_progress').select('*').eq('user_id', userId).single(),
-        supabase.from('user_skills').select('*, skill:competency_skills(*)').eq('user_id', userId),
-        supabase.from('module_progress').select('*').eq('user_id', userId),
-        supabase.from('user_engagement').select('*').eq('user_id', userId).order('date', { ascending: false }).limit(30),
-        supabase.from('achievements').select('*'),
-        supabase.from('user_achievements').select('*, achievement:achievements(*)').eq('user_id', userId),
-      ])
-      if (results[0].status === 'fulfilled') profile = results[0].value.data
-      if (results[1].status === 'fulfilled') progress = results[1].value.data
-      if (results[2].status === 'fulfilled') skills = results[2].value.data ?? []
-      if (results[3].status === 'fulfilled') moduleProgress = results[3].value.data ?? []
-      if (results[4].status === 'fulfilled') engagementData = results[4].value.data ?? []
-      if (results[5].status === 'fulfilled') achievements = results[5].value.data ?? []
-      if (results[6].status === 'fulfilled') userAchievements = results[6].value.data ?? []
-    }
+    const admin = getAdminClient()
+    const results = await Promise.allSettled([
+      admin.from('profiles').select('*').eq('clerk_id', userId).single(),
+      admin.from('user_progress').select('*').eq('user_id', userId).single(),
+      admin.from('user_skills').select('*, skill:competency_skills(*)').eq('user_id', userId),
+      admin.from('module_progress').select('*').eq('user_id', userId),
+      admin.from('user_engagement').select('*').eq('user_id', userId).order('date', { ascending: false }).limit(30),
+      admin.from('achievements').select('*'),
+      admin.from('user_achievements').select('*, achievement:achievements(*)').eq('user_id', userId),
+    ])
+    if (results[0].status === 'fulfilled') profile = results[0].value.data
+    if (results[1].status === 'fulfilled') progress = results[1].value.data
+    if (results[2].status === 'fulfilled') skills = results[2].value.data ?? []
+    if (results[3].status === 'fulfilled') moduleProgress = results[3].value.data ?? []
+    if (results[4].status === 'fulfilled') engagementData = results[4].value.data ?? []
+    if (results[5].status === 'fulfilled') achievements = results[5].value.data ?? []
+    if (results[6].status === 'fulfilled') userAchievements = results[6].value.data ?? []
   } catch (e) {
     console.warn('Progress data fetch failed:', e)
   }

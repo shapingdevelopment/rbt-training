@@ -1,6 +1,6 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect, notFound } from 'next/navigation'
-import { createAuthClient } from '@/lib/supabase'
+import { getAdminClient } from '@/lib/supabase'
 import { SimulatorSession } from '@/components/simulator/simulator-session'
 import type { Scenario, UserProgress } from '@/lib/types'
 
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default async function SimulatorSessionPage({ params }: Props) {
-  const { userId, getToken } = await auth()
+  const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
   const { scenarioId } = await params
@@ -18,16 +18,13 @@ export default async function SimulatorSessionPage({ params }: Props) {
   let progress: UserProgress | null = null
 
   try {
-    const token = await getToken({ template: 'supabase' })
-    if (token) {
-      const supabase = createAuthClient(token)
-      const [scenarioRes, progressRes] = await Promise.allSettled([
-        supabase.from('scenarios').select('*').eq('id', scenarioId).single(),
-        supabase.from('user_progress').select('*').eq('user_id', userId).single(),
-      ])
-      if (scenarioRes.status === 'fulfilled') scenario = scenarioRes.value.data
-      if (progressRes.status === 'fulfilled') progress = progressRes.value.data
-    }
+    const admin = getAdminClient()
+    const [scenarioRes, progressRes] = await Promise.allSettled([
+      admin.from('scenarios').select('*').eq('id', scenarioId).single(),
+      admin.from('user_progress').select('*').eq('user_id', userId).single(),
+    ])
+    if (scenarioRes.status === 'fulfilled') scenario = scenarioRes.value.data
+    if (progressRes.status === 'fulfilled') progress = progressRes.value.data
   } catch (e) {
     console.warn('Session data fetch failed:', e)
   }

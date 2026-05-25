@@ -178,7 +178,7 @@ export function SimulatorSession({ scenario, userLevel, currentStreak }: Simulat
         messages={messages}
         duration={sessionDuration}
         xpEarned={potentialXp}
-        onContinue={() => router.push('/demo/simulator')}
+        onContinue={() => router.push('/dashboard/simulator')}
       />
     )
   }
@@ -189,7 +189,7 @@ export function SimulatorSession({ scenario, userLevel, currentStreak }: Simulat
       <div className="border-b border-border bg-background p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/demo/simulator">
+            <Link href="/dashboard/simulator">
               <Button variant="ghost" size="icon">
                 <ArrowLeft size={18} />
               </Button>
@@ -222,7 +222,7 @@ export function SimulatorSession({ scenario, userLevel, currentStreak }: Simulat
               <Clock size={16} />
               <span>{sessionDuration}m</span>
             </div>
-            <Button variant="destructive" size="sm" onClick={() => router.push('/demo/simulator')}>
+            <Button variant="destructive" size="sm" onClick={() => router.push('/dashboard/simulator')}>
               End Session
             </Button>
           </div>

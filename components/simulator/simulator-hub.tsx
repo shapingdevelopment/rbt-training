@@ -95,7 +95,7 @@ export function SimulatorHub({ scenarios, userLevel }: SimulatorHubProps) {
       {/* Scenario Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredScenarios.map(scenario => (
-          <Link key={scenario.id} href={`/demo/simulator/${scenario.id}`}>
+          <Link key={scenario.id} href={`/dashboard/simulator/${scenario.id}`}>
             <ScenarioCard
               scenario={scenario}
               userLevel={userLevel}
