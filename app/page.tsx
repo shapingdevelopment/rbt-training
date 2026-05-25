@@ -36,7 +36,7 @@ export default async function HomePage() {
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
             <Sparkles size={14} />
-            AI-Assisted, BCBA-Supervised Training Platform
+            AI-Assisted Training Platform
           </div>
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6 text-balance">
             Master Clinical Skills with{' '}
