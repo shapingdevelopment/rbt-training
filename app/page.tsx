@@ -89,7 +89,7 @@ export default async function HomePage() {
             <h2 className="text-2xl sm:text-3xl font-bold mb-4">Comprehensive Learning Experience</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
               Five integrated modules designed to build clinical competence through practice,
-              reflection, adaptive learning, performance tracking, and supervisor dashboards. Designed and overseen by a Board Certified Behavior Analyst (BCBA), the platform maps directly to the RBT 40-hour curriculum.
+              reflection, adaptive learning, performance tracking, and supervisor dashboards. Designed and overseen by Board Certified Behavior Analysts (BCBAs), the platform maps directly to the RBT 40-hour curriculum.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
