@@ -36,7 +36,7 @@ export default async function HomePage() {
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
             <Sparkles size={14} />
-            AI-Powered Training Platform
+            AI-Assisted, BCBA-Supervised Training Platform
           </div>
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6 text-balance">
             Master Clinical Skills with{' '}
@@ -45,8 +45,7 @@ export default async function HomePage() {
             </span>
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-10 text-pretty">
-            Experiential learning for Registered Behavior Technicians. Practice with AI clients,
-            track your competencies, and earn certifications through gamified progression.
+            Experiential learning designed to meet the Registered Behavior Technician 40 hour-training requirements. Practice with AI simulated clients and track your competencies, through gamified progression.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <Link href="/sign-up" className="w-full sm:w-auto">
@@ -90,7 +89,7 @@ export default async function HomePage() {
             <h2 className="text-2xl sm:text-3xl font-bold mb-4">Comprehensive Learning Experience</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
               Five integrated modules designed to build clinical competence through practice,
-              reflection, and adaptive learning.
+              reflection, adaptive learning, performance tracking, and supervisor dashboards. Designed and overseen by a Board Certified Behavior Analyst (BCBA), the platform maps directly to the RBT 40-hour curriculum.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -144,7 +143,7 @@ export default async function HomePage() {
             <span className="font-semibold text-sm">Clarity Behavior Lab</span>
           </div>
           <p className="text-xs text-muted-foreground text-center sm:text-right">
-            &copy; {new Date().getFullYear()} Clarity Behavior Lab. AI-powered training for behavior technicians.
+            &copy; {new Date().getFullYear()} Clarity Behavior Lab. AI-assisted, BCBA-supervised training for behavior technicians. The BACB does not approve or endorse this platform.
           </p>
         </div>
       </footer>
