@@ -1,7 +1,6 @@
 'use client'
 
-import { Bell, Search } from 'lucide-react'
-import { Input } from '@/components/ui/input'
+import { Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { XpBar } from '@/components/gamification/xp-bar'
 
@@ -13,31 +12,24 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ title, subtitle, totalXp }: DashboardHeaderProps) {
   return (
-    <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30">
-      <div className="h-full px-6 flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-lg font-semibold">{title}</h1>
-          {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
+    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-14 lg:top-0 z-30">
+      {/* Main row — title + bell */}
+      <div className="px-4 sm:px-6 pt-3 pb-1 flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-base sm:text-lg font-semibold truncate">{title}</h1>
+          {subtitle && (
+            <p className="text-xs text-muted-foreground truncate">{subtitle}</p>
+          )}
         </div>
-        
-        <div className="flex-1 max-w-md mx-4">
-          <XpBar totalXp={totalXp} size="sm" animated={false} />
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-            <Input 
-              placeholder="Search scenarios..." 
-              className="pl-9 w-48 h-9 text-sm bg-secondary/50"
-            />
-          </div>
-          
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell size={18} />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
-          </Button>
-        </div>
+        <Button variant="ghost" size="icon" className="relative shrink-0">
+          <Bell size={18} />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
+        </Button>
+      </div>
+
+      {/* XP bar — full width on its own row */}
+      <div className="px-4 sm:px-6 pb-3">
+        <XpBar totalXp={totalXp} size="sm" animated={false} />
       </div>
     </header>
   )

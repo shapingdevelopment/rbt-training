@@ -65,7 +65,7 @@ export function DashboardOverview({
   const completionRate = _total > 0 ? Math.round(((progress.sessions_completed || 0) / _total) * 100) : 0
   
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
       {/* Top stats row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Level & XP Card */}
