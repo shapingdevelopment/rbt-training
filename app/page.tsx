@@ -18,7 +18,7 @@ export default async function HomePage() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <Lightbulb className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-lg">RBT Learn</span>
+            <span className="font-bold text-lg">Clarity Behavior Lab</span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/sign-in">
@@ -70,8 +70,8 @@ export default async function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             {[
               { value: '150+', label: 'Training Scenarios' },
-              { value: '6',    label: 'Competency Areas' },
-              { value: '100%', label: 'AI-Powered' },
+              { value: '7',    label: 'Competency Areas' },
+              { value: '100%', label: 'Learner Centered' },
               { value: '40h',  label: 'Certification Ready' },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
@@ -122,7 +122,7 @@ export default async function HomePage() {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-4">Ready to Start Your Learning Journey?</h2>
           <p className="text-muted-foreground mb-8 text-sm sm:text-base">
-            Join RBT Learn today and accelerate your path to clinical excellence through
+            Join Clarity Behavior Lab today and accelerate your path to clinical excellence through
             AI-powered experiential learning.
           </p>
           <Link href="/sign-up" className="inline-block w-full sm:w-auto">
@@ -141,10 +141,10 @@ export default async function HomePage() {
             <div className="w-6 h-6 rounded bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <Lightbulb className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-semibold text-sm">RBT Learn</span>
+            <span className="font-semibold text-sm">Clarity Behavior Lab</span>
           </div>
           <p className="text-xs text-muted-foreground text-center sm:text-right">
-            &copy; {new Date().getFullYear()} RBT Learn. AI-powered training for behavior technicians.
+            &copy; {new Date().getFullYear()} Clarity Behavior Lab. AI-powered training for behavior technicians.
           </p>
         </div>
       </footer>
