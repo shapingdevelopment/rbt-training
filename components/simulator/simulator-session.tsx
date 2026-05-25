@@ -49,14 +49,49 @@ export function SimulatorSession({ scenario, userLevel, currentStreak }: Simulat
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
   
-  // Initialize with scenario context
+  // Ask Claude to generate the opening message when the session loads
   useEffect(() => {
-    const initialMessage: ChatMessage = {
-      role: 'assistant',
-      content: getInitialClientMessage(scenario),
-      timestamp: new Date().toISOString()
+    const fetchOpening = async () => {
+      setIsLoading(true)
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            scenarioId: scenario.id,
+            messages: [{ role: 'user', content: '__START_SESSION__' }]
+          })
+        })
+        if (!response.ok) throw new Error('Failed')
+        const reader = response.body?.getReader()
+        const decoder = new TextDecoder()
+        let accumulated = ''
+        if (reader) {
+          while (true) {
+            const { done, value } = await reader.read()
+            if (done) break
+            for (const line of decoder.decode(value).split('\n')) {
+              if (line.startsWith('data: ')) {
+                const data = line.slice(6)
+                if (data === '[DONE]') break
+                try {
+                  const json = JSON.parse(data)
+                  if (json.text) {
+                    accumulated += json.text
+                    setMessages([{ role: 'assistant', content: accumulated, timestamp: new Date().toISOString() }])
+                  }
+                } catch {}
+              }
+            }
+          }
+        }
+      } catch {
+        setMessages([{ role: 'assistant', content: `Hello! I\'m ready to begin "${scenario.title}". How would you like to start?`, timestamp: new Date().toISOString() }])
+      } finally {
+        setIsLoading(false)
+      }
     }
-    setMessages([initialMessage])
+    fetchOpening()
   }, [scenario])
   
   const handleSendMessage = async () => {
@@ -323,6 +358,21 @@ export function SimulatorSession({ scenario, userLevel, currentStreak }: Simulat
   )
 }
 
+// Strip common markdown so chat reads as plain prose
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '$1')      // **bold**
+    .replace(/\*(.+?)\*/g, '$1')            // *italic* or *action*
+    .replace(/_{1,2}(.+?)_{1,2}/g, '$1')     // _italic_ or __bold__
+    .replace(/`{1,3}[^`]*`{1,3}/g, '')      // `code` or ```blocks```
+    .replace(/^#{1,6}\s+/gm, '')            // # headings
+    .replace(/^[-*+]\s+/gm, '• ')           // bullet lists
+    .replace(/^>\s+/gm, '')                 // blockquotes
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // [links](url)
+    .replace(/\n{3,}/g, '\n\n')            // collapse excess newlines
+    .trim()
+}
+
 function MessageBubble({ message }: { message: ChatMessage }) {
   const isUser = message.role === 'user'
   
@@ -343,7 +393,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
         'max-w-[70%] rounded-2xl px-4 py-2',
         isUser ? 'bg-primary text-primary-foreground' : 'bg-secondary'
       )}>
-        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+        <p className="text-sm whitespace-pre-wrap">{stripMarkdown(message.content)}</p>
       </div>
     </div>
   )

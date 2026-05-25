@@ -1,180 +1,90 @@
 import { auth } from '@clerk/nextjs/server'
 import { Anthropic } from '@anthropic-ai/sdk'
 import type { MessageParam } from '@anthropic-ai/sdk/resources/messages'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getAdminClient } from '@/lib/supabase'
 import { RBT_TASK_LIST, SCORING_STANDARDS } from '@/lib/rbt-context'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-// ─────────────────────────────────────────────────────────────────────────────
-// buildSystemPrompt
-// Injects the full BACB curriculum + scoring standards above every scenario
-// prompt. Sent once per session as the `system` field — not on every message —
-// so token cost is fixed regardless of conversation length.
-// ─────────────────────────────────────────────────────────────────────────────
+// Appended to every scenario prompt
+const FORMATTING_RULES = `
+
+FORMATTING RULES — follow strictly at all times:
+- Write in plain conversational prose. No markdown whatsoever.
+- No asterisks, no bold, no italics, no bullet points, no headers, no backticks.
+- Write actions and scene-setting in parentheses e.g. (The client looks away) not *The client looks away*
+- Keep each response to 2-4 sentences per turn unless scoring feedback requires more.
+`
+
+// Builds the full system prompt:
+// 1. BACB curriculum context (RBT_TASK_LIST)
+// 2. Scoring standards (COMPETENCY_SCORE format)
+// 3. The scenario-specific prompt from Supabase
+// 4. Formatting rules
 function buildSystemPrompt(scenarioPrompt: string): string {
-  return `
-${RBT_TASK_LIST}
-
-${SCORING_STANDARDS}
-
----
-
-${scenarioPrompt}
-`.trim()
+  return [
+    RBT_TASK_LIST,
+    SCORING_STANDARDS,
+    '---',
+    scenarioPrompt,
+    FORMATTING_RULES,
+  ].join('\n\n').trim()
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Fallback prompts — used ONLY if a scenario row has no system_prompt in
-// Supabase (e.g. during local dev before the database is populated).
-// Production scenarios should always have system_prompt set in the database.
-// ─────────────────────────────────────────────────────────────────────────────
-const FALLBACK_PROMPTS: Record<string, string> = {
-  'de-escalation': `You are an experienced ABA supervisor conducting a clinical simulation for an RBT trainee.
-The trainee is practising de-escalation techniques with a client experiencing challenging behavior.
+// Minimal fallback only used if the scenario ID is not found in Supabase at all
+const FALLBACK_PROMPT = `You are an ABA clinical supervisor running a practice simulation for an RBT trainee.
+Greet the trainee, describe a realistic clinical scenario involving a client with challenging behavior, and wait for their response.
+After 5+ exchanges output:
+<COMPETENCY_SCORE>{"domain":"general","score":0,"strengths":[],"improvement_areas":[]}</COMPETENCY_SCORE>`
 
-Scenario: A client with autism is becoming increasingly frustrated during a transition activity. They are raising their voice, pacing, and showing signs of escalation. The RBT needs to apply appropriate de-escalation strategies consistent with Section E of the 40-hour curriculum (antecedent interventions, behavior reduction).
-
-Your role:
-- Play the role of the frustrated client
-- Respond realistically to the RBT's de-escalation attempts
-- If they use calm tone, reduced verbal prompts, and wait time — show gradual improvement
-- If they increase demands, raise their voice, or overwhelm the client — continue escalating
-- After 5+ exchanges, provide coaching feedback referencing specific curriculum areas
-
-When ending the session after 5+ exchanges, output a JSON block tagged exactly like this:
-<COMPETENCY_SCORE>{"domain":"de-escalation","score":75,"strengths":["Used calm tone","Acknowledged feelings"],"improvement_areas":["Allow more wait time","Reduce verbal prompts"]}</COMPETENCY_SCORE>
-
-Start by describing the scene in one vivid sentence and wait for the RBT's response.`,
-
-  reinforcement: `You are an experienced ABA supervisor conducting a clinical simulation for an RBT trainee.
-The trainee is practising positive reinforcement strategies as covered in Section E of the curriculum.
-
-Scenario: A client is working on task completion with a goal of building independence. The RBT needs to identify effective reinforcers, deliver them contingently and immediately, and maintain a consistent reinforcement schedule.
-
-Your role:
-- Play the role of the client — motivated when reinforcement is delivered correctly, disengaged when it is not
-- Test the RBT's understanding of reinforcement timing, selection, and schedules (CRF vs. intermittent)
-- If reinforcement is delayed, inconsistent, or non-contingent — show decreased engagement
-- After 5+ exchanges, provide coaching referencing reinforcement principles
-
-When ending the session after 5+ exchanges, output:
-<COMPETENCY_SCORE>{"domain":"reinforcement","score":80,"strengths":[],"improvement_areas":[]}</COMPETENCY_SCORE>
-
-Start by describing the client's current motivation level and the task they are working on.`,
-
-  'data-collection': `You are an experienced ABA supervisor conducting a clinical simulation for an RBT trainee.
-The trainee is practising data collection and ABC notation as covered in Section C of the curriculum.
-
-Scenario: A client is in a 30-minute training session. Multiple behaviors are occurring — some target behaviors, some not. The RBT must accurately observe, record using the correct measurement procedure, and categorize behaviors using proper ABA terminology.
-
-Your role:
-- Narrate behaviors occurring in the session in real-time (describe antecedent, behavior, consequence)
-- Ask the RBT to identify what measurement procedure they are using and why
-- Challenge imprecise operational definitions
-- Test their ability to distinguish target from non-target behaviors
-- After 5+ exchanges, provide feedback on observation accuracy and recording decisions
-
-When ending the session after 5+ exchanges, output:
-<COMPETENCY_SCORE>{"domain":"data-collection","score":78,"strengths":[],"improvement_areas":[]}</COMPETENCY_SCORE>
-
-Start by setting the scene and asking the RBT what they observe.`,
-
-  communication: `You are an experienced ABA supervisor conducting a clinical simulation for an RBT trainee.
-The trainee is practising professional communication as covered in Sections F and G of the curriculum.
-
-Scenario: A guardian calls to ask about their child's progress and expresses concern about a behavioral incident that occurred yesterday. The RBT must communicate clearly, stay within their scope of practice (refer clinical questions to supervisor), and maintain client confidentiality per Ethics Code 2.08-2.10.
-
-Your role:
-- Play the role of a concerned but reasonable guardian
-- Ask progressively more specific clinical questions (e.g. "Why does my child do this?", "Should we change the plan?")
-- Test whether the RBT appropriately redirects clinical questions to the BCBA
-- Note if the RBT shares more information than necessary
-- After 5+ exchanges, provide feedback on professionalism, boundaries, and scope of practice
-
-When ending the session after 5+ exchanges, output:
-<COMPETENCY_SCORE>{"domain":"communication","score":82,"strengths":[],"improvement_areas":[]}</COMPETENCY_SCORE>
-
-Start by playing the guardian calling with a greeting and an initial concern.`,
-
-  safety: `You are an experienced ABA supervisor conducting a clinical simulation for an RBT trainee.
-The trainee is practising safety protocols and crisis management as covered in Section E (crisis intervention) of the curriculum.
-
-Scenario: During a home visit, a client begins showing signs of serious behavioral escalation that may result in self-injury or injury to others. The RBT must apply safety protocols, make a judgment about when to call for help, and prioritize everyone's safety while maintaining a calm professional demeanor.
-
-Your role:
-- Narrate the escalating situation in real time
-- Respond to the RBT's safety decisions (good decisions de-escalate slightly; poor decisions escalate further)
-- Test their knowledge of when to call the supervisor vs. emergency services
-- Test their ability to maintain safety without using unauthorized physical intervention
-- After 5+ exchanges, provide feedback on decision-making and protocol adherence
-
-When ending the session after 5+ exchanges, output:
-<COMPETENCY_SCORE>{"domain":"safety","score":73,"strengths":[],"improvement_areas":[]}</COMPETENCY_SCORE>
-
-Start by describing the developing situation in vivid detail and wait for the RBT to respond.`,
-}
-
-const DEFAULT_FALLBACK_ID = 'de-escalation'
-
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/chat
-// ─────────────────────────────────────────────────────────────────────────────
 export async function POST(request: Request) {
   try {
-    // Auth check — Clerk v6 requires await
     const { userId } = await auth()
 
-    const body = await request.json()
-    const { scenarioId, messages } = body as {
-      scenarioId: string
-      messages: { role: string; content: string }[]
-    }
+    const { scenarioId, messages } = await request.json()
 
-    if (!scenarioId || !messages || !Array.isArray(messages)) {
+    if (!scenarioId || !messages) {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields: scenarioId and messages are required' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: 'Missing required fields: scenarioId and messages' }),
+        { status: 400 }
       )
     }
 
-    // ── Resolve scenario prompt ──────────────────────────────────────────────
-    // 1. Try Supabase first (production path — prompt stored in database)
-    // 2. Fall back to hardcoded prompts (dev/demo path)
-    let rawScenarioPrompt: string | null = null
-
+    // ── Fetch scenario prompt from Supabase ──────────────────────────────────
+    let scenarioPrompt = FALLBACK_PROMPT
     try {
-      const { data: scenario, error } = await supabaseAdmin
+      const admin = getAdminClient()
+      const { data, error } = await admin
         .from('scenarios')
         .select('system_prompt, title')
         .eq('id', scenarioId)
         .single()
 
-      if (!error && scenario?.system_prompt) {
-        rawScenarioPrompt = scenario.system_prompt
+      if (error) {
+        console.warn(`[chat] Scenario not found in DB: ${scenarioId} — ${error.message}`)
+      } else if (data?.system_prompt) {
+        scenarioPrompt = data.system_prompt
       }
-    } catch {
-      // Supabase unavailable — fall through to fallback
+    } catch (e: any) {
+      console.error('[chat] Supabase lookup failed:', e.message)
     }
 
-    if (!rawScenarioPrompt) {
-      rawScenarioPrompt =
-        FALLBACK_PROMPTS[scenarioId] ??
-        FALLBACK_PROMPTS[DEFAULT_FALLBACK_ID]
-    }
+    const systemPrompt = buildSystemPrompt(scenarioPrompt)
 
-    // ── Build the full system prompt ─────────────────────────────────────────
-    // Prepends RBT_TASK_LIST (curriculum + clinical definitions) and
-    // SCORING_STANDARDS (mastery thresholds + COMPETENCY_SCORE tag format)
-    const systemPrompt = buildSystemPrompt(rawScenarioPrompt)
+    // ── Format messages ──────────────────────────────────────────────────────
+    // __START_SESSION__ → ask Claude to open the scenario with a greeting
+    const isStart = messages.length === 1 && messages[0].content === '__START_SESSION__'
+    const formattedMessages: MessageParam[] = isStart
+      ? [{
+          role: 'user',
+          content: 'Begin the scenario now. Set the scene, introduce the situation, and wait for my first response. Use plain prose only — no markdown.',
+        }]
+      : messages.map((msg: { role: string; content: string }) => ({
+          role: msg.role as 'user' | 'assistant',
+          content: msg.content,
+        }))
 
-    // ── Format messages for Anthropic ────────────────────────────────────────
-    const formattedMessages: MessageParam[] = messages.map((msg) => ({
-      role: msg.role as 'user' | 'assistant',
-      content: msg.content,
-    }))
-
-    // ── Call Claude with streaming ───────────────────────────────────────────
+    // ── Stream response from Claude ──────────────────────────────────────────
     const response = await client.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 800,
@@ -183,9 +93,7 @@ export async function POST(request: Request) {
       stream: true,
     })
 
-    // ── Stream response back to client ───────────────────────────────────────
     const encoder = new TextEncoder()
-
     const stream = new ReadableStream({
       async start(controller) {
         try {
@@ -195,16 +103,14 @@ export async function POST(request: Request) {
               event.delta.type === 'text_delta'
             ) {
               controller.enqueue(
-                encoder.encode(
-                  `data: ${JSON.stringify({ text: event.delta.text })}\n\n`
-                )
+                encoder.encode(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`)
               )
             }
           }
           controller.enqueue(encoder.encode('data: [DONE]\n\n'))
           controller.close()
         } catch (streamError) {
-          console.error('Stream error:', streamError)
+          console.error('[chat] Stream error:', streamError)
           controller.error(streamError)
         }
       },
@@ -217,11 +123,11 @@ export async function POST(request: Request) {
         Connection: 'keep-alive',
       },
     })
-  } catch (error) {
-    console.error('Chat API error:', error)
+  } catch (error: any) {
+    console.error('[chat] API error:', error.message)
     return new Response(
       JSON.stringify({ error: 'Failed to process chat request' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      { status: 500 }
     )
   }
 }
