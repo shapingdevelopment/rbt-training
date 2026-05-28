@@ -18,7 +18,7 @@ export default async function HomePage() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <Lightbulb className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-lg">Clarity Learning Lab</span>
+            <span className="font-bold text-lg">Clarity Learning Labs</span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/sign-in">
@@ -121,7 +121,7 @@ export default async function HomePage() {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-4">Ready to Start Your Learning Journey?</h2>
           <p className="text-muted-foreground mb-8 text-sm sm:text-base">
-            Join Clarity Learning Lab today and accelerate your path to clinical excellence through
+            Join Clarity Learning Labs today and accelerate your path to clinical excellence through
             AI-assisted experiential learning.
           </p>
           <Link href="/sign-up" className="inline-block w-full sm:w-auto">
@@ -140,10 +140,10 @@ export default async function HomePage() {
             <div className="w-6 h-6 rounded bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <Lightbulb className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-semibold text-sm">Clarity Learning Lab</span>
+            <span className="font-semibold text-sm">Clarity Learning Labs</span>
           </div>
           <p className="text-xs text-muted-foreground text-center sm:text-right">
-            &copy; {new Date().getFullYear()} Clarity Learning Lab. AI-assisted, BCBA-supervised training for behavior technicians. The BACB does not approve or endorse this platform.
+            &copy; {new Date().getFullYear()} Clarity Learning Labs. AI-assisted, BCBA-supervised training for behavior technicians. The BACB does not approve or endorse this platform.
           </p>
         </div>
       </footer>
