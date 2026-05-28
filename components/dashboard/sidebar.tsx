@@ -75,7 +75,7 @@ function NavContent({
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
             <Lightbulb className="w-5 h-5 text-primary-foreground" />
           </div>
-          <span className="font-bold text-lg text-sidebar-foreground">Clarity Behavior Lab</span>
+          <span className="font-bold text-lg text-sidebar-foreground">Clarity Learning Lab</span>
         </Link>
       </div>
 
@@ -165,7 +165,7 @@ export function DashboardSidebar({ user, progress }: DashboardSidebarProps) {
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
             <Lightbulb className="w-4 h-4 text-primary-foreground" />
           </div>
-          <span className="font-bold text-sidebar-foreground">Clarity Behavior Lab</span>
+          <span className="font-bold text-sidebar-foreground">Clarity Learning Lab</span>
         </Link>
         <button
           onClick={() => setMobileOpen(true)}
