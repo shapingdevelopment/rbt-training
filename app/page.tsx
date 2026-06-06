@@ -142,7 +142,7 @@ export default async function HomePage() {
             </div>
             <span className="font-semibold text-sm">Clarity Learning Labs</span>
           </div>
-          <p className="text-xs text-muted-foreground text-center sm:text-right">
+          <p className="text-xs text-muted-foreground text-center">
             &copy; {new Date().getFullYear()} Clarity Learning Labs. AI-assisted, BCBA-supervised training for registered behavior technicians. This training program is designed to meet the 2026 training eligibility requirement for RBT certification. This training is offered independent of the BACB.
           </p>
         </div>
